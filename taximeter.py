@@ -222,10 +222,12 @@ def _read_env_value(key: str) -> str:
     env = _env_file()
     if not env.exists():
         return ""
+    # Last match wins, matching docker-compose's handling of duplicate keys.
+    val = ""
     for line in env.read_text().splitlines():
         if line.startswith(f"{key}="):
-            return line[len(key) + 1:].strip()
-    return ""
+            val = line[len(key) + 1:].strip()
+    return val
 
 def _sql_str(val: str) -> str:
     if not val:
@@ -390,8 +392,10 @@ def cmd_install():
         .replace("\nSERVICE_ROLE_KEY=", f"\nSERVICE_ROLE_KEY={service_key}")
         .replace("http://localhost:3000", app_url)
         .replace("http://localhost:8000", app_url.replace(":3000", ":8000"))
+        # Fill the empty placeholders in-place (don't append duplicate keys).
+        .replace("\nCOMPANY_NAME=\n", f"\nCOMPANY_NAME={company_name}\n")
+        .replace("\nADMIN_EMAIL=\n", f"\nADMIN_EMAIL={admin_email}\n")
     )
-    env_content += f"\nCOMPANY_NAME={company_name}\nADMIN_EMAIL={admin_email}\n"
     env_file.write_text(env_content)
     ok(".env saved.")
 
