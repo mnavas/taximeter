@@ -36,8 +36,12 @@ central cloud. Each install is an island.
 
 ## Documentation
 
-End-user documentation (installation, daily use, administration) will live in `docs/` and is being
-written as the product takes shape.
+| Guide | For |
+|---|---|
+| [Installation & First-Time Setup](docs/install.md) | Standing up your server and configuring your company |
+| [Daily Use](docs/daily-use.md) | Running dispatch: fleet map, requests, trips, settlement, trust |
+| [Fleet & Fares](docs/fleet-and-fares.md) | Tiers, fare amounts, time rules, taxis, drivers, QR pairing |
+| [Administration & Maintenance](docs/admin.md) | Backups, updates, SMTP, troubleshooting, CLI reference |
 
 ---
 
