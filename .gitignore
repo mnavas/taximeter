@@ -1,0 +1,56 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# next.js
+/.next/
+/out/
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files — real secrets never committed
+.env
+.env.local
+.env.*.local
+# example files ARE committed so licensees can copy them
+!.env.example
+
+# generated during install — contains real JWT keys
+docker/kong.yml
+
+# runtime artifacts
+backups/
+__pycache__/
+
+# Claude / AI assistant files
+CLAUDE.md
+AGENTS.md
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# Internal planning / strategy / blueprint docs — NOT for the repo.
+# Only actual end-user documentation belongs in docs/ (e.g. docs/install.md),
+# which will be tracked automatically once written.
+/docs/business_plan.md
+/docs/requirements.md
+/docs/architecture.md
+/docs/data-model.md
+/docs/fares-and-tiers.md
+/docs/driver-app.md
+/docs/passenger-app.md
+/docs/payments.md
+/docs/device-pairing.md
+/docs/roadmap.md
+/docs/v*/
