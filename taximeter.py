@@ -301,6 +301,41 @@ def cmd_seed():
     ok(f"Company row seeded: {bold(name or 'My Taxi Company')}")
 
 
+# Storage needs post-boot setup: its tables are created by the storage service on
+# first start (after initdb), so the bucket, grants, and policies can't live in a
+# migration. The role memberships are in 0000_roles.sh; the rest is applied here.
+_STORAGE_SQL = """
+grant anon, authenticated, service_role to supabase_storage_admin;
+grant usage on schema storage to anon, authenticated, service_role;
+grant all on all tables in schema storage to anon, authenticated, service_role;
+grant all on all sequences in schema storage to anon, authenticated, service_role;
+insert into storage.buckets (id, name, public) values ('media','media',true) on conflict (id) do nothing;
+do $$ begin
+  if not exists (select 1 from pg_policies where schemaname='storage' and tablename='objects' and policyname='tm_media_read') then
+    create policy tm_media_read on storage.objects for select using (bucket_id='media');
+  end if;
+  if not exists (select 1 from pg_policies where schemaname='storage' and tablename='objects' and policyname='tm_media_write') then
+    create policy tm_media_write on storage.objects for all to authenticated, service_role using (bucket_id='media') with check (bucket_id='media');
+  end if;
+end $$;
+"""
+
+
+def _storage_setup(check_fail=True):
+    try:
+        _psql(_STORAGE_SQL)
+        ok("Storage configured (media bucket + policies).")
+    except Exception as e:
+        (warn if not check_fail else err)(f"Storage setup failed: {e}")
+        if check_fail:
+            sys.exit(1)
+
+
+def cmd_storage_setup():
+    _check_installed()
+    _storage_setup()
+
+
 def _create_admin(email, password, service_key, supa_url):
     import urllib.request, urllib.error
     api_url = f"{supa_url}/auth/v1/admin/users"
@@ -422,6 +457,9 @@ def cmd_install():
     except Exception as e:
         db_ok = False
         warn(f"DB init failed: {e}. Run {bold(_cmd() + ' seed')} later.")
+
+    # Storage setup (bucket + policies live outside migrations — see _storage_setup).
+    _storage_setup(check_fail=False)
 
     step(8, "Creating admin account…")
     admin_ok = True
@@ -589,6 +627,7 @@ def cmd_help():
                  Optional: {dim('./taximeter logs taximeter')}  — app only
   {green('status')}       Show container status
   {green('seed')}         Insert/update the company row from .env values
+  {green('storage-setup')} Configure the media storage bucket + policies (idempotent)
   {green('add-admin')}    Create a dashboard admin account (email + password)
   {green('backup')}       Dump the database to backups/taximeter_db_<timestamp>.sql
   {green('restore')}      Restore a database backup: {dim('./taximeter restore backups/file.sql')}
@@ -614,6 +653,7 @@ COMMANDS = {
     "status":    cmd_status,
     "update":    cmd_update,
     "seed":      cmd_seed,
+    "storage-setup": cmd_storage_setup,
     "add-admin": cmd_add_admin,
     "hostname":  cmd_hostname,
     "backup":    cmd_backup,

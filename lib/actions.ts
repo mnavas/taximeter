@@ -7,6 +7,38 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { requireUser } from "@/lib/auth";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+const SUPA_INTERNAL = process.env.SUPABASE_INTERNAL_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+const SUPA_PUBLIC = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+
+/** Upload a photo to the public `media` bucket; returns its public URL, or null. */
+async function uploadMedia(file: File, prefix: string): Promise<string | null> {
+  if (!file || file.size === 0) return null;
+  try {
+    const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+    const path = `${prefix}/${crypto.randomUUID()}.${ext}`;
+    const bytes = Buffer.from(await file.arrayBuffer());
+    const res = await fetch(`${SUPA_INTERNAL}/storage/v1/object/media/${path}`, {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${SERVICE_KEY}`,
+        apikey: SERVICE_KEY,
+        "content-type": file.type || "application/octet-stream",
+        "x-upsert": "true",
+      },
+      body: bytes,
+    });
+    if (!res.ok) return null;
+    return `${SUPA_PUBLIC}/storage/v1/object/public/media/${path}`;
+  } catch {
+    return null; // never block entity creation on a storage hiccup
+  }
+}
+
+function file(fd: FormData, key: string): File | null {
+  const v = fd.get(key);
+  return v instanceof File && v.size > 0 ? v : null;
+}
 
 function s(fd: FormData, key: string): string | null {
   const v = fd.get(key);
@@ -27,11 +59,14 @@ export async function createTaxi(fd: FormData) {
   const supa = createAdminClient();
   const plate = s(fd, "plate");
   if (!plate) return;
+  const photo = file(fd, "photo");
+  const photo_url = photo ? await uploadMedia(photo, "taxi") : null;
   await supa.from("taxi").insert({
     plate,
     make: s(fd, "make"),
     model: s(fd, "model"),
     color: s(fd, "color"),
+    photo_url,
     allowed_tiers: fd.getAll("allowed_tiers").map(String),
   });
   revalidatePath("/dashboard/fleet");
@@ -53,11 +88,14 @@ export async function createDriver(fd: FormData) {
   const supa = createAdminClient();
   const name = s(fd, "name");
   if (!name) return;
+  const photo = file(fd, "photo");
+  const photo_url = photo ? await uploadMedia(photo, "driver") : null;
   await supa.from("driver").insert({
     name,
     licence_no: s(fd, "licence_no"),
     phone: s(fd, "phone"),
     payment_account_label: s(fd, "payment_account_label"),
+    photo_url,
   });
   revalidatePath("/dashboard/drivers");
 }

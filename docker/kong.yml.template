@@ -92,8 +92,9 @@ services:
             - admin
 
   ## Storage - public object reads (no API key — needed for <img> tags)
+  ## URL keeps the /object/public/ prefix that strip_path removes from the path.
   - name: storage-v1-public
-    url: http://storage:5000/
+    url: http://storage:5000/object/public/
     routes:
       - name: storage-v1-public-read
         strip_path: true

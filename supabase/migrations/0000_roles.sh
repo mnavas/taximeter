@@ -46,6 +46,12 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
     GRANT authenticated TO supabase_admin;
     GRANT service_role  TO supabase_admin;
 
+    -- The storage service connects as supabase_storage_admin and SET ROLEs to the
+    -- JWT role per request, so it must be a member of those roles.
+    GRANT anon          TO supabase_storage_admin;
+    GRANT authenticated TO supabase_storage_admin;
+    GRANT service_role  TO supabase_storage_admin;
+
     GRANT ALL ON DATABASE postgres TO supabase_admin;
     GRANT ALL ON DATABASE postgres TO supabase_auth_admin;
     GRANT ALL ON DATABASE postgres TO supabase_storage_admin;

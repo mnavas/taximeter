@@ -28,6 +28,10 @@ export default async function FleetPage() {
             <input className="tm-input" name="model" placeholder="Model" />
             <input className="tm-input" name="color" placeholder="Color" />
           </div>
+          <label style={{ fontSize: 13, display: "grid", gap: 4 }}>
+            <span className="tm-muted">Vehicle photo</span>
+            <input className="tm-input" name="photo" type="file" accept="image/*" />
+          </label>
           <div>
             <div className="tm-muted" style={{ fontSize: 13, marginBottom: 6 }}>Allowed tiers</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
@@ -56,7 +60,13 @@ export default async function FleetPage() {
             <tbody>
               {list.map((t) => (
                 <tr key={t.id} style={{ borderTop: "1px solid var(--border)" }}>
-                  <td style={td}><strong>{t.plate}</strong></td>
+                  <td style={td}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      {t.photo_url && <img src={t.photo_url} alt="" width={34} height={34} style={{ borderRadius: 6, objectFit: "cover" }} />}
+                      <strong>{t.plate}</strong>
+                    </div>
+                  </td>
                   <td style={td}>{[t.make, t.model, t.color].filter(Boolean).join(" · ") || "—"}</td>
                   <td style={td}>{t.allowed_tiers?.map(tierName).join(", ") || "—"}</td>
                   <td style={td}>

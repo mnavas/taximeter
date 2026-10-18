@@ -35,6 +35,10 @@ export default async function DriversPage() {
             <input className="tm-input" name="phone" placeholder="Phone" />
             <input className="tm-input" name="payment_account_label" placeholder="Payment account (QR)" />
           </div>
+          <label style={{ fontSize: 13, display: "grid", gap: 4 }}>
+            <span className="tm-muted">Driver photo</span>
+            <input className="tm-input" name="photo" type="file" accept="image/*" />
+          </label>
           <button className="tm-btn" type="submit" style={{ justifySelf: "start" }}>Add driver</button>
         </form>
       </div>
@@ -58,7 +62,13 @@ export default async function DriversPage() {
             <tbody>
               {list.map((d) => (
                 <tr key={d.id} style={{ borderTop: "1px solid var(--border)" }}>
-                  <td style={td}><strong>{d.name}</strong></td>
+                  <td style={td}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      {d.photo_url && <img src={d.photo_url} alt="" width={34} height={34} style={{ borderRadius: "50%", objectFit: "cover" }} />}
+                      <strong>{d.name}</strong>
+                    </div>
+                  </td>
                   <td style={td}>{d.licence_no ?? "—"}</td>
                   <td style={td}>{d.phone ?? "—"}</td>
                   <td style={td}><span style={{ color: d.status === "active" ? "#16a34a" : "#dc2626" }}>{d.status}</span></td>
