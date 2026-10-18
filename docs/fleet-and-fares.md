@@ -124,5 +124,6 @@ Your company has one **public QR / link** passengers scan to hail your fleet. Pr
 stands, and put it on your website. It only lets the passenger app see availability counts and
 create requests — never your fleet's positions.
 
-> **Rolling out:** fare editing, fleet/driver registration, and QR pairing arrive with the fleet
-> and dispatch versions. Example tiers are seeded today so the Fares area already has data.
+> **Availability:** fare editing, fleet/driver registration, and driver pairing-QR generation are
+> built into the dashboard today (example tiers are seeded on install). Time-of-day tier rules and
+> driver/car photo refinements are still being polished.

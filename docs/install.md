@@ -177,6 +177,7 @@ power loss. Wait a couple of minutes after the machine starts, then check the Da
 - Fares, tiers, drivers, taxis, pairing → [fleet-and-fares.md](fleet-and-fares.md)
 - Backups, updates, SMTP, troubleshooting, CLI → [admin.md](admin.md)
 
-> **Note on availability:** the server and admin dashboard are the first pieces to ship. The driver
-> and passenger apps and the live dispatch flow roll out across subsequent versions — this guide
+> **Note on availability:** the server, admin dashboard (fleet, drivers, fares, settings), live fleet
+> map, QR pairing, availability counts, and dispatch (ride request → accept with ETA) are built. The
+> driver and passenger apps are rolling out, with the in-trip meter and settlement next — this guide
 > describes the full product so your setup is ready as each piece lands.

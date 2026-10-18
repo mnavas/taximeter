@@ -17,6 +17,7 @@ All management runs through one command (`taximeter` on Windows):
 ./taximeter logs         Live logs (Ctrl+C to stop) — e.g. ./taximeter logs taximeter
 ./taximeter status       Show container status
 ./taximeter seed         Insert/update the company row from .env
+./taximeter storage-setup Configure the media storage bucket + policies (idempotent)
 ./taximeter add-admin    Create a dashboard admin (email + password)
 ./taximeter backup       Dump the database to backups/
 ./taximeter restore      Restore a backup: ./taximeter restore backups/file.sql

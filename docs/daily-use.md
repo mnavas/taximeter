@@ -38,9 +38,12 @@ not lost, they sync when the phone reconnects.
 
 1. A passenger requests a ride (optionally choosing a tier).
 2. Taximeter offers it to eligible, available, nearby drivers.
-3. The first driver to **accept** gets the trip; the passenger is notified and shown the taxi's
-   plate, the driver's photo and name, the car's color and model, and a **verification code**.
-4. The passenger watches the assigned taxi approach with a live distance and ETA.
+3. The first driver to **accept** gets the trip — **declaring an estimated time to reach the
+   pickup** — and the passenger is notified and shown the taxi's plate, the driver's photo and name,
+   the car's color and model, and a **verification code**.
+4. The passenger sees that **ETA as a countdown** (from the driver's declared time + the pickup
+   distance) — not a live map. The declared ETA vs. the actual pickup time is recorded so you can
+   check driver punctuality.
 
 Passengers only ever see **how many** taxis are near and available — never a live map of individual
 taxis. Only their assigned taxi's position is shared, and only after a driver accepts.
@@ -110,6 +113,6 @@ passenger code was verified — so pay disputes are settled from stored data, no
 4. You watch the map, keep an eye on last-update times, and handle any marks.
 5. At day's end (or any range), you pull per-driver reports.
 
-> **Rolling out:** the server and dashboard are live first; the driver/passenger apps and live
-> dispatch arrive across later versions. This guide describes the full workflow so you know how it
-> all fits together.
+> **Availability:** the server, admin dashboard, live fleet map, QR pairing, availability counts, and
+> dispatch (request → accept with ETA) are built. The driver and passenger apps are rolling out; the
+> in-trip meter and settlement land next. This guide describes the full workflow end to end.
