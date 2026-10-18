@@ -1,12 +1,15 @@
-import Placeholder from "@/components/dashboard/Placeholder";
+import FleetMap from "@/components/dashboard/FleetMap";
+
+export const dynamic = "force-dynamic";
 
 export default function MapPage() {
   return (
-    <Placeholder title="Live Map" version="v0.1 – v0.2">
-      <p className="tm-muted" style={{ margin: 0 }}>
-        A live map of every on-duty taxi — current position, route, and last-update time — rendered
-        from <code>taxi_position</code> over Supabase Realtime.
+    <section>
+      <h1 style={{ fontSize: 24, margin: "0 0 4px" }}>Live Map</h1>
+      <p className="tm-muted" style={{ marginTop: 0, marginBottom: 16 }}>
+        On-duty taxis, updating live. A faded marker means that taxi hasn&apos;t reported in recently.
       </p>
-    </Placeholder>
+      <FleetMap />
+    </section>
   );
 }
